@@ -9,6 +9,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface UserFormModalProps {
   isOpen: boolean;
@@ -23,6 +24,11 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, initialData }
   const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (initialData) {
@@ -34,9 +40,10 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, initialData }
       setRoleId('1');
       setIsActive(true);
     }
+    setError('');
   }, [initialData, isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,42 +64,48 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, initialData }
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  const modalContent = (
+    <div className="fixed inset-0 z-[9999] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
       <div className="flex items-center justify-center min-h-screen p-4">
-        <div className="fixed inset-0 bg-black/50 transition-opacity" aria-hidden="true" onClick={onClose}></div>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" aria-hidden="true" onClick={onClose}></div>
 
-        <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto">
+        <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto animate-fade-up">
           <form onSubmit={handleSubmit}>
-            <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-              <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                {initialData ? 'Edit Pengguna' : 'Buat Pengguna Baru'}
-              </h3>
+            <div className="bg-white px-6 pt-6 pb-4 sm:p-8">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-slate-900" id="modal-title">
+                  {initialData ? 'Edit Pengguna' : 'Buat Pengguna Baru'}
+                </h3>
+                <button type="button" onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
               
               {error && (
-                <div className="mt-2 p-2 text-sm text-red-500 bg-red-100 rounded">
+                <div className="mb-4 p-3 text-sm text-red-700 bg-red-50 rounded-lg border border-red-200">
                   {error}
                 </div>
               )}
 
-              <div className="mt-4 space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email</label>
                   <input 
                     type="email" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                    placeholder="nama@email.com"
+                    className="block w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm shadow-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Role</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Role</label>
                   <select 
                     value={roleId}
                     onChange={(e) => setRoleId(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                    className="block w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm shadow-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                   >
                     <option value="1">Student</option>
                     <option value="2">Partner</option>
@@ -100,39 +113,41 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, initialData }
                   </select>
                 </div>
 
-                <div className="flex items-center">
+                <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
                   <input 
                     type="checkbox" 
+                    id="is_active"
                     checked={isActive}
                     onChange={(e) => setIsActive(e.target.checked)}
-                    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    className="h-4 w-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
                   />
-                  <label className="ml-2 block text-sm text-gray-900">
+                  <label htmlFor="is_active" className="text-sm font-medium text-slate-700 select-none">
                     Akun Aktif
                   </label>
                 </div>
                 
                 {!initialData && (
-                  <p className="text-xs text-amber-600 mt-2">
-                    * Password akan di-generate secara otomatis dan user akan dipaksa untuk mengubahnya pada saat login pertama kali.
-                  </p>
+                  <div className="flex gap-2 p-3 bg-indigo-50 rounded-lg border border-indigo-100">
+                    <svg className="h-4 w-4 text-indigo-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <p className="text-[11px] text-indigo-700 leading-relaxed font-medium">
+                      Password akan di-generate secara otomatis dan user akan dipaksa untuk mengubahnya pada saat login pertama kali.
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
-            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <div className="bg-slate-50 px-6 py-4 rounded-b-xl flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
               <button 
-                type="submit" 
-                disabled={loading}
-                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
-              >
-                {loading ? 'Menyimpan...' : 'Simpan'}
-              </button>
-              <button 
-                type="button" 
-                onClick={onClose}
-                className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                type="button" onClick={onClose}
+                className="px-5 py-2.5 rounded-lg border border-slate-300 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
               >
                 Batal
+              </button>
+              <button 
+                type="submit" disabled={loading}
+                className="px-5 py-2.5 rounded-lg bg-indigo-600 text-sm font-semibold text-white shadow-md hover:bg-indigo-700 disabled:opacity-50 transition-all"
+              >
+                {loading ? 'Menyimpan...' : 'Simpan'}
               </button>
             </div>
           </form>
@@ -140,4 +155,6 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, initialData }
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
