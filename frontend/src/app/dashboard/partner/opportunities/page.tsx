@@ -9,11 +9,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import PartnerOpportunityTable from '@/components/PartnerOpportunityTable';
 import OpportunityFormModal from '@/components/OpportunityFormModal';
 import { getPartnerOpportunities, createOpportunity, updateOpportunity, deleteOpportunity, OpportunityData } from '@/services/opportunityService';
 
 export default function PartnerOpportunitiesPage() {
+  const router = useRouter();
   const [opportunities, setOpportunities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,6 +45,10 @@ export default function PartnerOpportunitiesPage() {
   const handleEdit = (opp: any) => {
     setSelectedOpp(opp);
     setIsModalOpen(true);
+  };
+
+  const handleViewApplicants = (id: number) => {
+    router.push(`/dashboard/partner/opportunities/${id}/applications`);
   };
 
   const handleDelete = async (id: number) => {
@@ -100,6 +106,7 @@ export default function PartnerOpportunitiesPage() {
           opportunities={opportunities}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onViewApplicants={handleViewApplicants}
         />
       )}
 

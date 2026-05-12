@@ -14,9 +14,10 @@ interface PartnerOpportunityTableProps {
   opportunities: any[];
   onEdit: (opp: any) => void;
   onDelete: (id: number) => void;
+  onViewApplicants: (id: number) => void;
 }
 
-export default function PartnerOpportunityTable({ opportunities, onEdit, onDelete }: PartnerOpportunityTableProps) {
+export default function PartnerOpportunityTable({ opportunities, onEdit, onDelete, onViewApplicants }: PartnerOpportunityTableProps) {
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
       pending: 'bg-amber-50 text-amber-700 border-amber-200',
@@ -59,7 +60,7 @@ export default function PartnerOpportunityTable({ opportunities, onEdit, onDelet
           <tr className="bg-slate-50/50">
             <th className="py-3 pl-5 pr-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Judul</th>
             <th className="px-3 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Tipe</th>
-            <th className="px-3 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Deadline</th>
+            <th className="px-3 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Pelamar</th>
             <th className="px-3 py-3 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Status</th>
             <th className="py-3 pl-3 pr-5 text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Aksi</th>
           </tr>
@@ -69,6 +70,7 @@ export default function PartnerOpportunityTable({ opportunities, onEdit, onDelet
             <tr key={opp.id} className="hover:bg-slate-50/50 transition-colors duration-100">
               <td className="py-3.5 pl-5 pr-3">
                 <p className="text-sm font-medium text-slate-900">{opp.title}</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">Deadline: {opp.deadline ? new Date(opp.deadline).toLocaleDateString('id-ID') : '—'}</p>
                 {opp.status === 'rejected' && (
                   <p className="text-[11px] text-red-500 mt-0.5">Revisi & ajukan ulang</p>
                 )}
@@ -76,15 +78,31 @@ export default function PartnerOpportunityTable({ opportunities, onEdit, onDelet
               <td className="px-3 py-3.5">
                 <span className="text-xs text-slate-600 bg-slate-100 px-2 py-0.5 rounded">{getTypeLabel(opp.type)}</span>
               </td>
-              <td className="px-3 py-3.5 text-sm text-slate-500">
-                {opp.deadline ? new Date(opp.deadline).toLocaleDateString('id-ID') : '—'}
+              <td className="px-3 py-3.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-700">{opp.applications_count || 0}</span>
+                  <button 
+                    onClick={() => onViewApplicants(opp.id)}
+                    className="text-[10px] font-bold text-indigo-600 hover:underline disabled:opacity-50"
+                    disabled={opp.status !== 'approved'}
+                  >
+                    Lihat
+                  </button>
+                </div>
               </td>
               <td className="px-3 py-3.5">{getStatusBadge(opp.status)}</td>
               <td className="py-3.5 pl-3 pr-5 text-right">
                 <div className="flex items-center justify-end gap-1">
                   <button
+                    onClick={() => onViewApplicants(opp.id)}
+                    disabled={opp.status !== 'approved'}
+                    className="px-2.5 py-1 text-xs font-bold text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors disabled:opacity-30"
+                  >
+                    Pelamar
+                  </button>
+                  <button
                     onClick={() => onEdit(opp)}
-                    className="px-2.5 py-1 text-xs font-medium text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
+                    className="px-2.5 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
                   >
                     Edit
                   </button>

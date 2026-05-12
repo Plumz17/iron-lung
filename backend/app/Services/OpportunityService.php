@@ -18,7 +18,7 @@ class OpportunityService
      */
     public function getPartnerOpportunities(int $partnerId)
     {
-        return Opportunity::with('tags')->where('user_id', $partnerId)->orderBy('created_at', 'desc')->get();
+        return Opportunity::with('tags')->withCount('applications')->where('user_id', $partnerId)->orderBy('created_at', 'desc')->get();
     }
 
     /**
