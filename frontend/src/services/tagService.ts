@@ -44,7 +44,7 @@ export const deleteTag = async (id: number) => {
  * Mengambil daftar tag yang tersedia untuk publik/mahasiswa
  */
 export const getAvailableTags = async () => {
-  const response = await apiClient.get('/tags/available');
+  const response = await apiClient.get('/tags/public');
   return response.data;
 };
 
