@@ -125,5 +125,6 @@ export default function OpportunityReviewModal({ isOpen, onClose, onSubmit, oppo
     </div>
   );
 
-  return createPortal(modalContent, document.body);
+  const target = typeof document !== 'undefined' ? document.getElementById('modal-root') : null;
+  return target ? createPortal(modalContent, target) : null;
 }

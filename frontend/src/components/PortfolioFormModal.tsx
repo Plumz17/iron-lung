@@ -154,5 +154,6 @@ export default function PortfolioFormModal({ isOpen, onClose, onSubmit, initialD
     </div>
   );
 
-  return createPortal(modalContent, document.body);
+  const target = typeof document !== 'undefined' ? document.getElementById('modal-root') : null;
+  return target ? createPortal(modalContent, target) : null;
 }

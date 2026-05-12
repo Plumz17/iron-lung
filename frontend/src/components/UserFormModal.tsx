@@ -156,5 +156,6 @@ export default function UserFormModal({ isOpen, onClose, onSubmit, initialData }
     </div>
   );
 
-  return createPortal(modalContent, document.body);
+  const target = typeof document !== 'undefined' ? document.getElementById('modal-root') : null;
+  return target ? createPortal(modalContent, target) : null;
 }
