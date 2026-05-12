@@ -258,5 +258,3 @@ export default function OpportunityFormModal({ isOpen, onClose, onSubmit, initia
   const target = document.getElementById('modal-root');
   return target ? createPortal(modalContent, target) : null;
 }
-}
-}
