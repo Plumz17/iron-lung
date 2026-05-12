@@ -9,6 +9,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { OpportunityData } from '@/services/opportunityService';
 import { getPublicTags } from '@/services/tagService';
 
