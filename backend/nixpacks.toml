@@ -1,5 +1,16 @@
-[requires]
-php_version = "8.2"
+[phases.setup]
+nixPkgs = ['php83', 'php83Extensions.pdo', 'php83Extensions.pdo_pgsql', 'php83Extensions.pgsql', 'php83Extensions.mbstring', 'php83Extensions.openssl', 'php83Extensions.tokenizer', 'php83Extensions.xml', 'php83Extensions.ctype', 'php83Extensions.curl', 'php83Extensions.dom', 'php83Extensions.fileinfo', 'php83Extensions.filter', 'php83Extensions.bcmath']
 
-[scripts]
-post-install = "php artisan config:cache && php artisan route:cache && php artisan migrate --force && php artisan db:seed --force"
+[phases.install]
+cmds = ['composer install --no-dev --optimize-autoloader']
+
+[phases.build]
+cmds = [
+    'mkdir -p storage/framework/{sessions,views,cache}',
+    'chmod -R 775 storage bootstrap/cache',
+    'php artisan config:cache',
+    'php artisan route:cache'
+]
+
+[start]
+cmd = 'php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}'
