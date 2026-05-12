@@ -111,7 +111,8 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan saat login.',
-                'errors' => $e->getMessage()
+                'debug_error' => $e->getMessage(),
+                'debug_trace' => $e->getTraceAsString()
             ], 500);
         }
     }
