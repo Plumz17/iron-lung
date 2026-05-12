@@ -19,9 +19,14 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000', 'http://127.0.0.1:3000', env('FRONTEND_URL')],
+    'allowed_origins' => array_filter([
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+        'https://iron-lung-pi.vercel.app',
+        env('FRONTEND_URL'),
+    ]),
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => ['#^https://iron-lung.*\.vercel\.app$#'],
 
     'allowed_headers' => ['*'],
 
