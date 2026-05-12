@@ -18,7 +18,7 @@ interface AuthFormProps {
 export default function AuthForm({ type, onSubmit }: AuthFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [roleId, setRoleId] = useState('2'); // Default Student
+  const [roleId, setRoleId] = useState('1'); // Default Student
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -65,9 +65,9 @@ export default function AuthForm({ type, onSubmit }: AuthFormProps) {
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
-              onClick={() => setRoleId('2')}
+              onClick={() => setRoleId('1')}
               className={`py-2.5 px-4 rounded-lg border text-sm font-medium transition-all duration-200 ${
-                roleId === '2'
+                roleId === '1'
                   ? 'border-indigo-500 bg-indigo-50 text-indigo-700 ring-1 ring-indigo-500'
                   : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
               }`}
@@ -76,9 +76,9 @@ export default function AuthForm({ type, onSubmit }: AuthFormProps) {
             </button>
             <button
               type="button"
-              onClick={() => setRoleId('3')}
+              onClick={() => setRoleId('2')}
               className={`py-2.5 px-4 rounded-lg border text-sm font-medium transition-all duration-200 ${
-                roleId === '3'
+                roleId === '2'
                   ? 'border-indigo-500 bg-indigo-50 text-indigo-700 ring-1 ring-indigo-500'
                   : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
               }`}
