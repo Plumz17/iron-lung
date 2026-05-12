@@ -1,0 +1,5 @@
+[requires]
+php_version = "8.2"
+
+[scripts]
+post-install = "php artisan config:cache && php artisan route:cache && php artisan migrate --force && php artisan db:seed --force"
