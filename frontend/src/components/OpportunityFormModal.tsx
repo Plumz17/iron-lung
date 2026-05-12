@@ -78,11 +78,6 @@ export default function OpportunityFormModal({ isOpen, onClose, onSubmit, initia
     e.preventDefault();
     setError('');
     
-    if (formData.tag_ids.length === 0) {
-      setError('Harap pilih setidaknya satu tag.');
-      return;
-    }
-
     try {
       setLoading(true);
       await onSubmit(formData);

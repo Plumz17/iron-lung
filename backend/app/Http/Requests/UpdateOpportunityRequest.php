@@ -26,7 +26,7 @@ class UpdateOpportunityRequest extends FormRequest
             'type' => 'required|in:internship,competition,training',
             'location' => 'nullable|string|max:255',
             'deadline' => 'nullable|date',
-            'tag_ids' => 'required|array',
+            'tag_ids' => 'nullable|array',
             'tag_ids.*' => 'exists:tags,id',
         ];
     }
