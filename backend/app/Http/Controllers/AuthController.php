@@ -91,7 +91,7 @@ class AuthController extends Controller
                 true, // Secure
                 true, // HttpOnly
                 false,
-                'Strict' // SameSite
+                'None' // SameSite — Must be 'None' for cross-domain (Vercel→Railway)
             );
 
             return response()->json([
